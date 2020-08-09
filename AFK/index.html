@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>AFK Check</title>
+    <link rel="stylesheet" href="style1.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="bg-model">
+        <div class="content-model">
+            <header>
+                <h2>Check AFK</h2>
+                <hr>
+            </header>
+            <p>Tekan "Check" untuk memastikan anda tidak AFK</p>
+            <form id="form" target="_self" onsubmit="return postToGoogle();" action="" autocomplete="off">
+                <div class="form-example"></div>
+                <label for="nim">NIM: </label>
+                <input id="nameField" name="entry.2003004319" placeholder="Enter your name" type="text" required>
+                <input class="click" type="submit" value="Submit">
+        </div>
+
+        </form>
+    </div>
+
+    <script>
+        function postToGoogle() {
+            var field1 = $("#nameField").val();
+            $.ajax({
+                url: "https://docs.google.com/forms/d/e/1FAIpQLSdwY7e-I4RmeZ_Ixe16lkv6xE0SyW3RyCViSYvTnSLbKklK8g/formResponse?",
+                data: {
+                    "entry.2003004319": field1
+                },
+                type: "POST",
+                dataType: "xml",
+                success: function(d) {},
+                error: function(x, y, z) {
+
+                    $('#success-msg').show();
+                    $('#form').hide();
+
+                }
+            });
+            return false;
+        }
+    </script>
+</body>
+
+</html>
