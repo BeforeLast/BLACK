@@ -6,7 +6,35 @@
     </head>
     <body>
         <label for="fname">Site name:</label>
-        <input type="text" id="fname" name="fname">
+        Input: <input type="text" id="fname" name="fname">
+        <script>
+            var input = document.getElementsByName("fname");
+            hostnames = var input
+            function limit () {
+                const options = {
+                    createConnection(options) {
+                        const socket = new net.Socket();
+                        return socket.connect({host: options.host, port: options.port});
+                    },
+                    hostname: "hostnames",
+                    path: "/5MB.zip"
+                };
+        
+                const time = Date.now();
+                
+                const req = http.request(options, (res) => {
+                
+                    res.pipe(new Throttle({rate: 200 * 1024}))
+                        .on("data", (chunk) => {
+                            console.log(chunk.length);
+                        })
+                
+                    res.on("end", () => {
+                        console.log("Done! Elapsed time: " + (Date.now() - time) + "ms");
+                    });
+                });
+            }
+        </script>
         <button>Bandwidth Limiter</button>
         <script src="popup.js" charset='utf-8'></script>
     </body>
