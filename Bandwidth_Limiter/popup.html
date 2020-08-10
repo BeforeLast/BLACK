@@ -4,38 +4,48 @@
         <meta charset="UTF-8">
         <title>Document</title>
     </head>
+
     <body>
-        <label for="fname">Site name:</label>
-        <input type="text" id="fname" name="fname">
+        <div class="bg-model">
+            <div class="content-model">
+                <button type="button" onclick="limit();">LIMITER</button>
+            </div>
+        </div>
         <script>
-            var input = document.getElementsByName("fname");
-            hostnames = input
-            function limit () {
-                const options = {
-                    createConnection(options) {
-                        const socket = new net.Socket();
-                        return socket.connect({host: options.host, port: options.port});
-                    },
-                    hostname: "hostnames",
-                    path: "/5MB.zip"
-                };
-        
-                const time = Date.now();
-                
-                const req = http.request(options, (res) => {
-                
-                    res.pipe(new Throttle({rate: 200 * 1024}))
-                        .on("data", (chunk) => {
-                            console.log(chunk.length);
+                function limit() {
+                    const fs = require('fs');
+                    const http = require("http");
+                    const {ThrottleGroup} = require("stream-throttle");
+
+                    var tg = new ThrottleGroup({rate: 1024*1024*2}); //2 MiB /sec
+                    var wstream = fs.createWriteStream("ouput.jpg");
+                    wstream
+                        .on('open', () => {
+                            console.log('open', new Date())        
                         })
-                
-                    res.on("end", () => {
-                        console.log("Done! Elapsed time: " + (Date.now() - time) + "ms");
+                        .on('finish', () => {
+                            console.log('finish', new Date())        
+                        });  
+
+                    var dataLength = 0;
+                    http.get('http://127.0.0.1/', (res) => {    
+                        res
+                        .pipe(tg.throttle())
+                        .pipe(wstream);
+
+                        res
+                        .on('open', ()=>{
+                            console.log('res open', new Date())
+                        })        
+                        .on('data', (chunk)=>{
+                            dataLength += chunk.length
+                            console.log(new Date(), `data length: ${dataLength}`)
+                        })
+                        .on('close', () => {
+                            console.log('res close', new Date())        
+                        })          
                     });
-                });
-            }
+                }
         </script>
-        <button>Bandwidth Limiter</button>
-        <script src="popup.js" charset='utf-8'></script>
     </body>
 </html>
